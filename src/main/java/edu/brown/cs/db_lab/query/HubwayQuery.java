@@ -46,11 +46,12 @@ public class HubwayQuery {
    */
   public List<String> query1(String args[]) throws SQLException{
     //TODO: Write the query as a string
-    String query = "";
+    String query = "SELECT station FROM stations WHERE status=? ORDER BY station;";
     
     // Create a PreparedStatement
     PreparedStatement prep;
     prep = conn.prepareStatement(query);
+    prep.setString(1, "Removed");
     
     // Execute the query and retrieve a ResultStatement
     ResultSet rs = prep.executeQuery();
@@ -91,13 +92,16 @@ public class HubwayQuery {
     double upperRightLng = Double.parseDouble(args[3]);
 
     //TODO: Write the query as a string
-    String query = "";
+    String query = "SELECT station FROM stations WHERE lat < ? AND lat > ? AND lng < ? AND lng > ? ORDER BY station;";
 
     PreparedStatement prep;
     prep = conn.prepareStatement(query);
     
     //TODO: Fill in the PreparedStatement
-    //HINT: Use PreparedStatment's method 'setDouble'
+    prep.setDouble(1, upperRightLat);
+    prep.setDouble(2, lowerLeftLat);
+    prep.setDouble(3, upperRightLng);
+    prep.setDouble(4, lowerLeftLng);
     
     // Add the results to a list
     ResultSet rs = prep.executeQuery();
@@ -133,13 +137,23 @@ public class HubwayQuery {
     //TODO: Write the query as a string
     // At least one of the starting or ending stations must be 
     // in the bounding box
-    
-    String query = "";
+
+    String query = "SELECT trips.hubway_id FROM trips, stations "
+    + "WHERE (trips.start_statn = stations.id OR trips.end_statn = stations.id) "
+    + "AND stations.lat < ? "
+    + "AND stations.lat > ? "
+    + "AND stations.lng < ? "
+    + "AND stations.lng > ? "
+    + "ORDER BY trips.hubway_id LIMIT 5;";
 
     PreparedStatement prep;
     prep = conn.prepareStatement(query);
     
     //TODO: Fill in the PreparedStatement
+    prep.setDouble(1, upperRightLat);
+    prep.setDouble(2, lowerLeftLat);
+    prep.setDouble(3, upperRightLng);
+    prep.setDouble(4, lowerLeftLng);
       
     // Add the results to a list
     ResultSet rs = prep.executeQuery();
